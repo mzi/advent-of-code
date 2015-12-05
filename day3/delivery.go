@@ -25,6 +25,7 @@ import (
 type santa struct {
 	x    int
 	y    int
+	h    *map[string]bool
 	uniq int
 }
 
@@ -46,11 +47,11 @@ func (s *santa) location() string {
 	return fmt.Sprintf("%d,%d", s.x, s.y)
 }
 
-func (s *santa) deliver(x byte, h *map[string]bool) {
-	house := *h
+func (s *santa) deliver(x byte) {
+	h := *s.h
 	s.move(x)
-	if !house[s.location()] {
-		house[s.location()] = true
+	if !h[s.location()] {
+		h[s.location()] = true
 		s.uniq++
 	}
 }
@@ -64,21 +65,18 @@ func read() []byte {
 }
 
 func main() {
-	onlysanta := new(santa)
-	realsanta := new(santa)
-	robosanta := new(santa)
-	onlysanta.x, onlysanta.y, onlysanta.uniq = 0, 0, 1
-	realsanta.x, realsanta.y, realsanta.uniq = 0, 0, 1
-	robosanta.x, robosanta.y = 0, 0
-	buf := read()
 	alone := map[string]bool{"0,0": true}
 	shared := map[string]bool{"0,0": true}
+	onlysanta := &santa{x: 0, y: 0, uniq: 1, h: &alone}
+	realsanta := &santa{x: 0, y: 0, uniq: 1, h: &shared}
+	robosanta := &santa{x: 0, y: 0, uniq: 0, h: &shared} // real santa gets the first house
+	buf := read()
 	for i, x := range buf {
-		onlysanta.deliver(x, &alone)
+		onlysanta.deliver(x)
 		if i%2 == 0 {
-			realsanta.deliver(x, &shared)
+			realsanta.deliver(x)
 		} else {
-			robosanta.deliver(x, &shared)
+			robosanta.deliver(x)
 		}
 	}
 	fmt.Println("On his own, Santa visits", onlysanta.uniq, "houses")
