@@ -1,5 +1,21 @@
 package main
 
+/*
+
+Moves are always exactly one house to the north (^), south (v), east (>),
+or west (<). After each move, he delivers another present to the house at
+his new location.
+
+How many houses receive at least one present?
+
+Santa and Robo-Santa start at the same location (delivering two presents to
+the same starting house), then take turns moving based on the same instructions
+as before
+
+How many houses receive at least one present?
+
+*/
+
 import (
 	"fmt"
 	"io/ioutil"
@@ -7,8 +23,9 @@ import (
 )
 
 type santa struct {
-	x int
-	y int
+	x    int
+	y    int
+	uniq int
 }
 
 func (s *santa) move(b byte) {
@@ -22,12 +39,20 @@ func (s *santa) move(b byte) {
 	case "<":
 		s.y--
 	default:
-		fmt.Println("Uknown byte!", string(b))
 	}
 }
 
 func (s *santa) location() string {
 	return fmt.Sprintf("%d,%d", s.x, s.y)
+}
+
+func (s *santa) deliver(x byte, h *map[string]bool) {
+	house := *h
+	s.move(x)
+	if !house[s.location()] {
+		house[s.location()] = true
+		s.uniq++
+	}
 }
 
 func read() []byte {
@@ -38,29 +63,25 @@ func read() []byte {
 	return buf
 }
 
-func deliver(x byte, asanta *santa, houses *map[string]bool, delivery *int) {
-	house := *houses
-	asanta.move(x)
-	if !house[asanta.location()] {
-		house[asanta.location()] = true
-		*delivery++
-	}
-}
-
 func main() {
+	onlysanta := new(santa)
 	realsanta := new(santa)
 	robosanta := new(santa)
-	realsanta.x, realsanta.y = 0, 0
+	onlysanta.x, onlysanta.y, onlysanta.uniq = 0, 0, 1
+	realsanta.x, realsanta.y, realsanta.uniq = 0, 0, 1
 	robosanta.x, robosanta.y = 0, 0
 	buf := read()
-	delivery := 1
-	houses := map[string]bool{"0,0": true}
+	alone := map[string]bool{"0,0": true}
+	shared := map[string]bool{"0,0": true}
 	for i, x := range buf {
+		onlysanta.deliver(x, &alone)
 		if i%2 == 0 {
-			deliver(x, realsanta, &houses, &delivery)
+			realsanta.deliver(x, &shared)
 		} else {
-			deliver(x, robosanta, &houses, &delivery)
+			robosanta.deliver(x, &shared)
 		}
 	}
-	fmt.Println(delivery)
+	fmt.Println("On his own, Santa visits", onlysanta.uniq, "houses")
+	fmt.Println("With his robot friend they visit", robosanta.uniq+realsanta.uniq,
+		"houses. (Santa", realsanta.uniq, "houses and robot", robosanta.uniq, "houses)")
 }

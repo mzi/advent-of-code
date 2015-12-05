@@ -1,5 +1,22 @@
 package main
 
+/*
+
+Second day problem.
+
+Find the surface area of the box, which is 2*l*w + 2*w*h + 2*h*l.
+The elves also need a little extra paper for each present: the
+area of the smallest side.
+
+The ribbon required to wrap a present is the shortest distance
+around its sides, or the smallest perimeter of any one face. Each
+present also requires a bow made out of ribbon as well; the feet
+of ribbon required for the perfect bow is equal to the cubic feet
+of volume of the present.
+
+*/
+
+
 import (
 	"bufio"
 	"fmt"
@@ -11,9 +28,7 @@ import (
 )
 
 func paper(l, w, h int) int {
-	lw := l * w
-	hl := h * l
-	wh := w * h
+	lw, hl, wh := l*w, h*l, w*h
 	s := []int{lw, hl, wh}
 	sort.Ints(s)
 	return 2*lw + 2*hl + 2*wh + s[0]
@@ -48,5 +63,5 @@ func main() {
 		feet += ribbon(l, w, h)
 	}
 
-	fmt.Println(sqFeet,feet)
+	fmt.Println("Paper:", sqFeet, "sqfeet", "Ribbon:", feet, "ft")
 }
