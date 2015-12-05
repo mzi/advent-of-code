@@ -38,17 +38,28 @@ func read() []byte {
 	return buf
 }
 
+func deliver(x byte, asanta *santa, houses *map[string]bool, delivery *int) {
+	house := *houses
+	asanta.move(x)
+	if !house[asanta.location()] {
+		house[asanta.location()] = true
+		*delivery++
+	}
+}
+
 func main() {
-	santa := new(santa)
-	santa.x, santa.y = 0, 0
+	realsanta := new(santa)
+	robosanta := new(santa)
+	realsanta.x, realsanta.y = 0, 0
+	robosanta.x, robosanta.y = 0, 0
 	buf := read()
 	delivery := 1
 	houses := map[string]bool{"0,0": true}
-	for _, x := range buf {
-		santa.move(x)
-		if !houses[santa.location()] {
-			houses[santa.location()] = true
-			delivery++
+	for i, x := range buf {
+		if i%2 == 0 {
+			deliver(x, realsanta, &houses, &delivery)
+		} else {
+			deliver(x, robosanta, &houses, &delivery)
 		}
 	}
 	fmt.Println(delivery)

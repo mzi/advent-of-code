@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func calc(l, w, h int) int {
+func paper(l, w, h int) int {
 	lw := l * w
 	hl := h * l
 	wh := w * h
@@ -19,8 +19,15 @@ func calc(l, w, h int) int {
 	return 2*lw + 2*hl + 2*wh + s[0]
 }
 
+func ribbon(l, w, h int) int {
+	s := []int{l, w, h}
+	sort.Ints(s)
+	return 2*s[0] + 2*s[1] + l*w*h
+}
+
 func main() {
 	sqFeet := 0
+	feet := 0
 
 	fd, err := os.Open("input.txt")
 	if err != nil {
@@ -37,8 +44,9 @@ func main() {
 		w, _ := strconv.Atoi(geo[1])
 		h, _ := strconv.Atoi(geo[2])
 
-		sqFeet += calc(l, w, h)
+		sqFeet += paper(l, w, h)
+		feet += ribbon(l, w, h)
 	}
 
-	fmt.Println(sqFeet)
+	fmt.Println(sqFeet,feet)
 }

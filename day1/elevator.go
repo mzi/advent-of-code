@@ -19,14 +19,18 @@ func main() {
 	input := read()
 	up := "("
 	down := ")"
-	for _, d := range input {
+	first := true
+	for i, d := range input {
 		switch string(d) {
 		case up:
 			floor++
 		case down:
 			floor--
 		default:
-			fmt.Println("We shouldn't be here")
+		}
+		if floor == -1 && first {
+			fmt.Println(i + 1)
+			first = false
 		}
 	}
 	fmt.Println(floor)
