@@ -23,10 +23,10 @@ import (
 )
 
 type santa struct {
-	x    int
-	y    int
-	h    *map[string]bool
-	uniq int
+	x      int
+	y      int
+	houses *map[string]bool
+	uniq   int
 }
 
 func (s *santa) move(b byte) {
@@ -48,10 +48,10 @@ func (s *santa) location() string {
 }
 
 func (s *santa) deliver(x byte) {
-	h := *s.h
+	houses := *s.houses
 	s.move(x)
-	if !h[s.location()] {
-		h[s.location()] = true
+	if !houses[s.location()] {
+		houses[s.location()] = true
 		s.uniq++
 	}
 }
@@ -67,9 +67,9 @@ func read() []byte {
 func main() {
 	alone := map[string]bool{"0,0": true}
 	shared := map[string]bool{"0,0": true}
-	onlysanta := &santa{x: 0, y: 0, uniq: 1, h: &alone}
-	realsanta := &santa{x: 0, y: 0, uniq: 1, h: &shared}
-	robosanta := &santa{x: 0, y: 0, uniq: 0, h: &shared} // real santa gets the first house
+	onlysanta := &santa{x: 0, y: 0, uniq: 1, houses: &alone}
+	realsanta := &santa{x: 0, y: 0, uniq: 1, houses: &shared}
+	robosanta := &santa{x: 0, y: 0, uniq: 0, houses: &shared} // real santa gets the first house
 	buf := read()
 	for i, x := range buf {
 		onlysanta.deliver(x)

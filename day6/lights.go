@@ -97,6 +97,6 @@ func solve(second bool, str string, input []string) string {
 
 func main() {
 	input := read()
-	solve(false, "number of lights on", input)
-	solve(true, "luminacity", input)
+	fmt.Println(solve(false, "number of lights on", input))
+	fmt.Println(solve(true, "luminacity", input))
 }

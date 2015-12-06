@@ -33,14 +33,12 @@ func read() []byte {
 func main() {
 	floor := 0
 	input := read()
-	up := "("
-	down := ")"
 	first := true
-	for i, d := range input {
-		switch string(d) {
-		case up:
+	for i, direction := range input {
+		switch string(direction) {
+		case "(":
 			floor++
-		case down:
+		case ")":
 			floor--
 		default:
 		}

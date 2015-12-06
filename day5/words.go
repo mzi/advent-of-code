@@ -8,30 +8,29 @@ import (
 	"strings"
 )
 
-func nicep(line []byte) bool {
-	v := vowels(line, 3)
+func niceWords(line []byte) bool {
+	v := vowels(line)
 	d := doubles(line)
 	f := noforbidden(line)
-
 	return v && d && f
 }
 
-func supernicep(line []byte) bool {
+func nicerWords(line []byte) bool {
 	p := pairs(line)
 	s := skip(line)
 	return p && s
 }
 
-func vowels(line []byte, o int) bool {
-	x := 0
-	for _, c := range line {
-		switch string(c) {
+func vowels(line []byte) bool {
+	n := 0
+	for _, char := range line {
+		switch string(char) {
 		case "a", "e", "i", "o", "u":
-			x++
+			n++
 		default:
 		}
 	}
-	if x >= o {
+	if n >= 3 {
 		return true
 	}
 	return false
@@ -59,7 +58,6 @@ func noforbidden(line []byte) bool {
 func pairs(line []byte) bool {
 	l := string(line)
 	for i := 0 ; i < len(l) - 2 ; i++ {
-		fmt.Println(l[i:i+2])
 		if strings.Contains(l[i+2:], l[i:i+2]) {
 			return true
 		}
@@ -77,7 +75,7 @@ func skip(line []byte) bool {
 }
 
 func main() {
-	var nice, naughty, supernice, supernaughty int
+	var nice, nicer int
 	fd, err := os.Open("input.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -89,17 +87,13 @@ func main() {
 	for scanner.Scan() {
 		line := string(scanner.Text())
 		l := []byte(line)
-		if nicep(l) {
+		if niceWords(l) {
 			nice++
-		} else {
-			naughty++
 		}
-		if supernicep(l) {
-			supernice++
-		} else {
-			supernaughty++
+		if nicerWords(l) {
+			nicer++
 		}
 	}
-	fmt.Println(nice, naughty)
-	fmt.Println(supernice, supernaughty)
+	fmt.Println("There are", nice, "words.")
+	fmt.Println("There are", nicer, "even nicer words.")
 }
